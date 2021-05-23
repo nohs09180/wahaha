@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>カメラ</title>
+
+	</head>
+    <body>
+        <style>
+            video {
+                border: 1px solid gray;
+                height: 375px;
+                width: 500px;
+            }
+            canvas {
+                border: 1px solid gray;
+                height: 375px;
+                width: 500px;
+            }
+            .count {
+                font-size: 30px;
+            }
+        </style> 
+
+        <video id="camera"></video>
+        <canvas></canvas>
+
+        <div class="count" id='count'>
+        </div>
+
+        <div class="controls">
+            <button class="btn start" id="start" type="button">Start</button>
+            <button class="btn stopped" id="stop" type="button">Stop</button>
+            <button class="btn play" id="play" type="button">Play</button>
+            <button class="btn pause" id="pause" type="button">Pause</button>
+            <button class="btn screenshot" id="screenshot" type="button">Screenshot</button>
+            <button class="btn submit" id="submit" type="button">submit</button>
+            <button class="btn submit" id="start_submit" type="button">start_submit</button>
+            <button class="btn submit" id="stop_submit" type="button">stop_submit</button>
+
+        </div>
+
+        <div class="result">
+        </div>
+
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>        <script>
+            const video = document.querySelector("video");
+            const controls = document.querySelector(".controls");
+            const play = document.querySelector("#play");
+            const pause = document.querySelector("#pause");
+            const start = document.querySelector("#start");
+            const stopped = document.querySelector("#stop");
+            const screenshot = document.querySelector("#screenshot")
+            const canvas = document.querySelector("canvas");   
+            const submited = document.querySelector("#submit");
+            const start_submit = document.querySelector("#start_submit");
+            const stop_submit = document.querySelector("#stop_submit");
+            // const screenshotImage = document.querySelector('img');  
+
+            const constraints = {
+                audio: false,
+                video: {
+                    width: {
+                        max: 500
+                    },
+                    height: {
+                        max: 500
+                    },
+                    facingMode: "user"
+                }    
+            };    
+
+            start.onclick = () => {
+                navigator.mediaDevices.getUserMedia(constraints)
+                .then( (stream) => {
+                    video.srcObject = stream;
+                    video.onloadedmetadata = (e) => {
+                        video.play();
+                    };
+                })
+                .catch( (err) => {
+                    console.log(err.name + ":" + err.message);
+                });
+            }
+
+            stopped.onclick = () => {
+                let stream = video.srcObject;
+                let tracks = stream.getTracks();
+
+                tracks.forEach((track) => {
+                    track.stop();
+                });
+
+                video.srcObject = null;
+            }
+
+            pause.onclick = () => {
+                video.pause();
+                // play.classList.remove('d-none');
+                // pause.classList.add('d-none');
+            }
+
+            
+            play.onclick = () => {
+                video.play();
+                // play.classList.add('d-none');
+                // pause.classList.remove('d-none');
+            }
+
+
+            // おまじない開始
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                    return cookieValue;
+            }
+
+            var csrftoken = getCookie('csrftoken');
+
+            function csrfSafeMethod(method) {
+                // these HTTP methods do not require CSRF protection
+                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+            }
+
+            $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                }
+            });
+            // おまじない了
+
+            // function wait(sec) {
+            //     var objDef = new $.Deferred;
+                
+            //     setTimeout(function () {
+            //         objDef.resolve(sec);
+            //     }, sec*1000);
+                
+            //     return objDef.promise();
+            // };
+            function mk_session() {
+                $.ajax({
+                    'url': '{% url "app:mk_session" %}',
+                    'type': 'GET',
+                })
+            }
+
+           
+            function img_cap() {
+                let cnt = 0
+                const img_loap = () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0);
+                    const img_url = canvas.toDataURL();
+                    
+                    $.ajax({
+                        'url': '{% url "app:get_data" %}',
+                        'type': 'POST',
+                        'data': {
+                            'image': img_url, 
+                        },
+                        'dataType': 'json'
+                    }).done( smile => {
+                        console.log(smile);
+                        // $('.result').append('<p>smileは' + smile + 'です</p>');
+                        // let elem = document.getElementById('count');
+                        // elem.textContent = cnt;
+                        // cnt += 1
+                        // const id = setTimeout(img_loap, 500);
+                        // if (cnt==10) {
+                        //     clearTimeout(id);
+                        // }
+                    });
+                }
+                img_loap();
+            }
+
+            function storage_session() {
+                $.ajax({
+                    'url': '{% url "app:storage_session" %}',
+                    'type': 'GET',
+                })
+            }
+
+            function print_session() {
+                $.ajax({
+                    'url': '{% url "app:print_session" %}',
+                    'type': 'GET',
+                })
+            }
+
+            function append_session() {
+                $.ajax({
+                    'url': '{% url "app:append_session" %}',
+                    'type': 'GET',
+                }).done( video => {
+                    console.log(video);
+                })
+            }
+
+
+            submited.onclick = () => {
+                img_cap();
+            }
+
+            // 押せないようにピンクを表示する
+            let canselFlag = false;
+
+            submited.onclick = () => {
+                
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0);
+                const img_url = canvas.toDataURL();
+                // console.log('img_url', img_url)
+
+                if (canselFlag == false) {
+                    $('#submit').prop('disabled', true).addClass("pink");
+                    canselFlag = true;
+
+                    $.ajax({
+                        'url': '{% url "app:get_data" %}',
+                        'type': 'POST',
+                        'data': {
+                            'image': img_url, 
+                        },
+                        'dataType': 'json'
+                    }).done( response => {
+                        console.log('success');
+                        $('#submit').prop('disabled', false).removeClass("pink");
+                        canselFlag = false;
+                    });
+                }
+            }
+
+            // サーバーから返り値を受ける
+            submited.onclick = () => {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0);
+                const img_url = canvas.toDataURL();
+                // console.log('img_url', img_url)
+
+                $.ajax({
+                    'url': '{% url "app:get_data" %}',
+                    'type': 'POST',
+                    'data': {
+                        'image': img_url, 
+                    },
+                    'dataType': 'json'
+                }).done( response => {
+                    const img = $('<img>', {src: response.image});
+                    console.log(response.image);
+                    console.log('success');
+                });
+            }
+
+
+
+
+
+            start_submit.onclick = () => {
+                mk_session();
+            }
+
+            stop_submit.onclick = () => {
+                append_session();
+            }
+
+            screenshot.onclick = () => {
+                location.href = '{% url "app:print_session" %}';
+            }
+
+
+
+
+
+        </script>     
+    </body>
+</html>

@@ -1,0 +1,38 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'app/video_list.css' %}">
+{% endblock %}
+
+{% block title %}
+<title>動画一覧</title>
+{% endblock %}
+
+{% block content %}
+{% include 'app/header.html' %}
+<div class="videolist-wrapper">
+	<div class="container">
+		<div class="headtext">
+			<h1>動画一覧</h1>
+		</div>
+		<div class="video-items">
+			<div class="container">
+				<div class="row">
+					{% if videos %}
+						{% for v in videos %}
+							<div class="video-item col-xs-12 col-sm-6 col-md-4">
+								<video src="{% static v.url %}" controls></video>
+								<a href="{% url 'app:video_detail' v.id %}">{{ v.name }}</a>
+							</div>
+						{% endfor %}
+					{% else %}
+						<p>No videos are available.</p>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% include 'app/footer.html' %}
+{% endblock %}

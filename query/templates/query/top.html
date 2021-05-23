@@ -1,0 +1,44 @@
+{% extends 'app/base.html' %}
+
+{% block title %}
+<title>お問い合わせ</title>
+{% endblock %}
+
+{% block content %}
+{% include 'app/header.html' %}
+<div class="row mt-5">
+    <div class="col text-center h1">お問い合わせ</div>
+</div>
+<div class="mt-2"></div>
+<form action="" method="POST">
+    <div class="col-md-6 offset-md-3">
+        {{ form.non_field_errors }}
+        {% for field in form %}
+        <div class="form-group">
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}
+        </div>
+        {% endfor %}
+        <div>
+            <button type="submit" class="btn btn-primary w-100 mt-3">送信</button>
+        </div>
+    </div>
+    {% csrf_token %}
+</form>
+
+<style>
+    .error-message {
+        color: red;
+        font-size: 10px;
+        padding-top: 8px;
+        margin: 0;
+    }
+</style>
+
+<script>
+    $("form").on('submit', e => {
+        disableSubmitButton();
+    })
+</script>
+{% endblock %}

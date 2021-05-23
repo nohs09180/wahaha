@@ -1,0 +1,194 @@
+{% extends "app/base.html" %}
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'app/video_detail.css' %}">
+{% endblock %}
+
+{% block title %}
+<title>{{ v.name }}-WAHAHA</title>
+{% endblock %}
+
+{% block content %}
+{% include "app/header.html" %}
+<div class="videolist-wrapper">
+	<div class="container">
+		<div class="headtext">
+		</div>
+		<div class="video-items">
+			<video src="{% static v.url %}" controls></video>
+			<p>動画タイトル: {{ v.name }}</p>
+		</div>
+		<div class="camera-items">
+			<h1>カメラゾーン</h1>
+			<video class="camera" id="camera"></video>
+			<canvas></canvas>	
+			<div class="controls">
+				<button class="btn start" id="start" type="button">Start</button>
+				<button class="btn stop d-none" id="stop" type="button">Stop</button>
+				<!-- <button class="btn play d-none" id="play" type="button">Play</button> -->
+				<!-- <button class="btn pause d-none" id="pause" type="button">Pause</button> -->
+				<!-- <button class="btn screenshot" id="screenshot" type="button">Screenshot</button> -->
+				<!-- <button class="btn submit" id="submit" type="button">submit</button> -->
+			</div>					
+		</div>
+	</div>
+</div>
+
+<script>
+	const video = document.querySelector("#camera");
+	const play = document.querySelector("#play");
+	const pause = document.querySelector("#pause");
+	const start = document.querySelector("#start");
+	const stopped = document.querySelector("#stop");
+	// const screenshot = document.querySelector("#screenshot")
+	const canvas = document.querySelector("canvas");   
+	// const submit = document.querySelector("#submit");
+
+	const constraints = {
+		audio: false,
+		video: {
+			width: {
+				max: 500
+			},
+			height: {
+				max: 500
+			},
+			facingMode: "user"
+		}    
+	}; 
+
+	// おまじない開始
+	function getCookie(name) {
+		var cookieValue = null;
+		if (document.cookie && document.cookie !== '') {
+			var cookies = document.cookie.split(';');
+			for (var i = 0; i < cookies.length; i++) {
+				var cookie = jQuery.trim(cookies[i]);
+				// Does this cookie string begin with the name we want?
+				if (cookie.substring(0, name.length + 1) === (name + '=')) {
+					cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+					break;
+				}
+			}
+		}
+		return cookieValue;
+	}
+
+	var csrftoken = getCookie('csrftoken');
+
+	function csrfSafeMethod(method) {
+		// these HTTP methods do not require CSRF protection
+		return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+	}
+
+	$.ajaxSetup({
+		beforeSend: function (xhr, settings) {
+			if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+				xhr.setRequestHeader("X-CSRFToken", csrftoken);
+			}
+		}
+	});
+	// おまじない了
+
+
+	function img_cap() {
+		let cnt = 0
+		const img_loap = () => {
+			canvas.width = video.videoWidth;
+			canvas.height = video.videoHeight;
+			const ctx = canvas.getContext('2d');
+			ctx.drawImage(video, 0, 0);
+			const img_url = canvas.toDataURL();
+			
+			$.ajax({
+				'url': '{% url "app:get_data" %}',
+				'type': 'POST',
+				'data': {
+					'image': img_url, 
+				},
+				'dataType': 'json'
+			}).done( smile => {
+				// $('.result').append('<p>smileは' + smile + 'です</p>');
+				// let elem = document.getElementById('count');
+				// elem.textContent = cnt;
+				console.log("cnt:", cnt)
+				cnt += 1
+				const id = setTimeout(img_loap, 500);
+				// if (cnt==10) {
+				// 	clearTimeout(id);
+				// }
+			});
+		}
+		img_loap();
+	}
+
+	start.onclick = () => {
+		navigator.mediaDevices.getUserMedia(constraints)
+		.then( (stream) => {
+			video.srcObject = stream;
+			video.onloadedmetadata = (e) => {
+				video.play();
+			};
+			setTimeout(img_cap, 2000);
+			start.classList.add('d-none');
+			stopped.classList.remove('d-none');
+		})
+		.catch( (err) => {
+			console.log(err.name + ":" + err.message);
+		});
+	}
+
+
+	stopped.onclick = () => {
+		let stream = video.srcObject;
+		if (stream) {
+			let tracks = stream.getTracks();
+
+			tracks.forEach((track) => {
+				track.stop();
+			});
+
+			video.srcObject = null;
+			
+			start.classList.remove('d-none');
+			stopped.classList.add('d-none');
+		} else {
+			console.log("not start");
+		}
+	}
+
+	// pause.onclick = () => {
+	// 	video.pause();
+
+	// 	stopped.classList.add('d-none');
+	// 	play.classList.remove('d-none');
+	// 	pause.classList.add('d-none');
+	// }
+
+	
+	// play.onclick = () => {
+	// 	video.play();
+	// 	setTimeout(img_cap);
+	// 	console.log("play on click")
+
+	// 	stopped.classList.remove('d-none');
+	// 	play.classList.add('d-none');
+	// 	pause.classList.remove('d-none');
+	// }
+
+	// screenshot.onclick = () => {
+	// 	canvas.width = video.videoWidth;
+	// 	canvas.height = video.videoHeight;
+	// 	const ctx = canvas.getContext('2d');
+	// 	ctx.drawImage(video, 0, 0);
+	// 	const img_url = canvas.toDataURL();
+	// }			
+
+	// submit.onclick = () => {
+	// 	img_cap();
+	// }
+
+</script>
+{% include "app/footer.html" %}
+{% endblock %}
