@@ -1,45 +1,36 @@
-<header class="sticky-top bg-light" style="height: 60px;">
+<header class="bg-light">
     <div class="container">
-        <div class="header-left">
-            <a href="{% url 'app:' %}" style="line-height: 60px;">WAHAHA</a>
-        </div>
-        <div class="header-right d-flex align-items-center">
-            {% if user.is_authenticated %}
-            <a class="ml-3" href="{% url 'users:logout' %}">ログアウト</a>
-            {% else %}
-            <a class="ml-3" href="{% url 'users:signup' %}">新規登録</a>
-            <a class="ml-3" href="{% url 'users:login' %}">ログイン</a>
-            {% endif %}
-        </div>
+        <nav class="navbar navbar-expand-sm navbar-light sticky-top">
+            <a class="navbar-brand" href="{% url 'app:' %}" style="font-size: 30px; font-weight: bold; line-height: 60px;">WAHAHA</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#wahahamenu" aria-controls="wahahamenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <div class="collapse navbar-collapse text-center" id="wahahamenu">
+                <ul class="navbar-nav ml-auto">
+                    {% if user.is_authenticated %}
+                    <li>
+                        <a class="nav-link" href="{% url 'app:video_list' %}">動画一覧</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="{% url 'app:mypage' %}">ユーザ名：{{ user }}</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="{% url 'users:logout' %}">ログアウト</a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a class="nav-link" href="{% url 'app:video_list' %}">動画一覧</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="{% url 'users:signup' %}">新規登録</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="{% url 'users:login' %}">ログイン</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
     </div>
-    <style>
-        .header-left {
-            float: left;
-        }
-
-        .header-left a {
-            font-size: 30px;
-            color: black;
-            font-weight: bold;
-        }
-
-        .header-right {
-            height: 60px;
-            float: right;
-        }
-
-        .header-right a {
-            font-size: 18px;
-            color: rgb(0, 149, 238);
-            padding: 5px 20px;
-            border: 1px solid rgb(0, 149, 238);
-            border-radius: 4px;
-            transition: all 0.3s ease-out 0s;
-        }
-
-        .header-right a:hover {
-            background-color: rgb(0, 149, 238);
-            color: white;
-        }
-    </style>
 </header>

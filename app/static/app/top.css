@@ -1,84 +1,57 @@
 .top-wrapper {
     height: 600px;
-    padding: 100px 0;
     background-color: #000;
-    color: white;
     position: relative;
 }
 
-.bg {
-    position: absolute;
+.bg-image-holder {
+    background-image: url("images/smile_illust.jpeg");
+    background-size: cover;
     width: 100%;
     height: 100%;
-    top: 0;
-    background-image: url("images/background.gif");
-    background-size: cover;
-    opacity: 0.5;
-}
-
-.content-position {
+    opacity: 0.6;
     position: absolute;
+    top: 0;
+}
+
+.top-msg {
+    width: 100%;
+    color: white;
     text-align: center;
-    width: 100%; 
+    position: absolute;
+    top: 35%;
+    z-index: 10;
 }
 
-.head-wrapper h1 {
-    font-size: 60px;
-    text-shadow: 1px 1px 10px pink;
+.top-wrapper h1 {
+    text-shadow: 1px 1px 5px pink;
 }
 
-.head-wrapper h2 {
+.top-wrapper h2 {
     font-size: 30px;
     font-weight: normal;
     letter-spacing: 2px;
     text-shadow: 1px 1px 5px pink;
+    margin-bottom: 30px;
 }
 
 .btn {
     color: white;
-    padding: 5px 10px;
-    border-radius: 10px;
+    background-color: #3c61e6;
     font-size: 24px;
+    font-weight: 500;
+    border-radius: 44px;
+    padding: 10px 20px;
+    transition: background-color,color .5s ease;
 }
 
-.signup {
-    background-color: rgb(0, 149, 238);
+.btn:hover {
+    background-color: white;
 }
 
-/* .facebook {
-    background-color: #3b5998;
-    margin-right: 10px;
-}
-
-.twitter {
-    background-color: #55acee;
-} */
-
-.videolist {
-    font-weight: bold;
-    color: rgb(29, 22, 22);
-    background-color: pink;
-    /* border-radius: 0%; */
-    transition: all 0.3s ease-out 0s;
-}
-
-.video-list:hover {
-    background-color: rgba(185, 124, 134, 0.7);
-}
-
-
-.app-wrapper {
+.range-box {
     margin: 100px 0;
-    text-align: center;
+    width: 100%;
+    background-color: gray;
+    height: 300px;
 }
-
-.app1 img {
-    width: auto;
-}
-
-.app2 img {
-    width: 40%;
-}
-
-
-

@@ -15,16 +15,16 @@ class Login(LoginView):
     template_name = 'users/login.html'
 
 
-class Logout(LogoutView):
+class Logout(LoginRequiredMixin, LogoutView):
     """ログアウトページ"""
-    template_name = 'app/top.html'
+    template_name = 'users/login.html'
 
 class UserCreate(generic.CreateView):
     """ユーザー仮登録"""
     model = User
     form_class = UserCreateForm
     template_name = 'users/signup.html'
-    success_url = '/users/login/'
+    success_url = '/app/mypage/'
 
     # def form_valid(self, form):
     #     messages.success(self.request, "完了しました")

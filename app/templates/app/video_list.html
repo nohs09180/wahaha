@@ -11,28 +11,46 @@
 
 {% block content %}
 {% include 'app/header.html' %}
-<div class="videolist-wrapper">
-	<div class="container">
-		<div class="headtext">
-			<h1>動画一覧</h1>
+<div class="main-container">
+	<section class="top-wrapper">
+		<!-- <div class="bg-image-holder"></div> -->
+		<div class="top-msg">
+			<h1 style="line-height: 200px;">お笑い動画一覧</h1>
 		</div>
-		<div class="video-items">
-			<div class="container">
-				<div class="row">
-					{% if videos %}
+	</section>
+	<section class="video-wrapper">
+		<div class="container">
+			<div class="d-flex flex-row row-content">
+				<div class="video-side-bar col-md-3 order-2">
+					<div class="side-bar bg-primary mt-3">
+						<div class="side-content">
+							<p>動画カテゴリ</p>
+						</div>
+					</div>
+				</div>
+				<div class="video-items col-md-9 order-1 mt-3">
+					<div class="row grid">
+						{% if videos %}
 						{% for v in videos %}
-							<div class="video-item col-xs-12 col-sm-6 col-md-4">
-								<video src="{% static v.url %}" controls></video>
-								<a href="{% url 'app:video_detail' v.id %}">{{ v.name }}</a>
-							</div>
+						<div class="video-item col-xs-12 col-md-6 col-lg-4 mb-3">
+							<article>
+								<div class="video-body">
+									<video src="{% static v.url %}" controls></video>
+								</div>
+								<div class="video-text">
+									<a href="{% url 'app:video_detail' v.id %}">{{ v.name }}</a>
+								</div>
+							</article>
+						</div>
 						{% endfor %}
-					{% else %}
-						<p>No videos are available.</p>
-					{% endif %}
+						{% else %}
+							<p>No videos are available.</p>
+						{% endif %}
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+	</section>
 </div>
 {% include 'app/footer.html' %}
 {% endblock %}

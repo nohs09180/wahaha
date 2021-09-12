@@ -11,42 +11,58 @@
 
 {% block content %}
 {% include 'app/header.html' %}
-<div class="top-wrapper">
-	<div class="bg"></div>
-	<div class="content-position">
-		<div class="container">
-			<div class="head-wrapper mt-5">
-				<h1 class="mb-5">日々をもっとおもしろく。</h1>
-				<h2>WAHAHAはあなたの好きなお笑いを増やします。</h2>
+<div class="main-container">
+	<section class="top-wrapper">
+		<div class="bg-image-holder"></div>
+		<div class="top-msg">
+			<h1 class="mb-5">日々をもっとおもしろく。</h1>
+			<h2>WAHAHAはあなたの好きなお笑いを増やします。</h2>
+			<div style='margin: auto;'>
+				<a class="btn videolist" href="{% url 'app:video_list' %}">動画一覧</a>
 			</div>
-			<!-- <div class="signup-wrapper mt-5"> -->
-				<!-- <a class="btn signup" href="{% url 'users:signup' %}">新規登録</a> -->
-				<!-- <p>or sign up with</p> -->
-				<!-- <a class="btn facebook" href="#"><span class="fa fa-facebook"></span>Facebook</a> -->
-				<!-- <a class="btn twitter" href="#"><span class="fa fa-twitter"></span>Twitter</a> -->
-			<!-- </div> -->
-			<!-- <a class="btn videolist mt-5" href="{% url 'app:video_list' %}">動画一覧はこちら</a> -->
 		</div>
-	</div>
-</div>
-
-<div class="app-wrapper">
-	<h1 class="app-header mb-4">WAHAHAとは？</h1>
-	<div class="app-content mb-5">
-		<div class="app1">
-			<img src="{% static 'app/images/app1.gif' %}" alt="">
-			<p>動画視聴中の様子を内臓カメラで撮影し，笑顔認識を行うことで，笑顔の大きさを0~1で数値化します。</p>
+	</section>
+	<section class="app-wrapper" style="text-align: center;">
+		<div class="container">
+			<div class="wahaha-is-about"></div>
+				<div class="range-box" style="font-size: 24px;">
+					<h1>WAHAHAとは？</h1>
+					<p>
+						お笑い動画を見ることで，好きなお笑いをどんどん増やしていくことができるサービスです．
+					</p>
+				</div>
+			<div class="users-merit">
+				<div class="range-box">
+					<h1>使用するメリット</h1>
+					<ol>
+						<li>笑いグラフを確認することで，自分がどこでどのぐらい笑っているか知ることができる！</li>
+						<li>友達と笑いポイントの比較をして楽しめる！</li>
+						<li>まだ認知度の低い芸人の漫才やコントをオススメされることで，好きなお笑い芸人が増えるかも！</li>
+					</ol>
+				</div>
+			</div>
+			<div class="how-to-use">
+				<div class="range-box">
+					<!-- <img src="{% static 'app/images/app1.gif' %}" alt=""> -->
+					<h1>使用の流れ</h1>
+					<p>
+						動画視聴中の様子を内臓カメラで撮影し，笑顔認識を行うことで，笑顔の大きさを0~1で数値化します。
+						<br>
+						笑顔の大きさの折れ線グラフが作成され，笑顔の推移が確認できます。また，このデータを用いてオススメのお笑い動画を決定します。
+					</p>
+				</div>
+			</div>
 		</div>
-	</div>
-	<div class="app-content">
-		<div class="app2">
-			<img src="{% static 'app/images/app2.gif' %}" alt="">
-			<p>笑顔の大きさの折れ線グラフが作成され，笑顔の推移が確認できます。また，このデータを用いてオススメのお笑い動画を決定します。</p>
-		</div>
-	</div>
-	<div class="clear"></div>
-
-	<a class="btn videolist mt-5" href="{% url 'app:video_list' %}">動画一覧はこちら</a>
+	</section>
 </div>
 {% include 'app/footer.html' %}
 {% endblock %}
+
+
+		<!-- <div class="signup-wrapper mt-5">
+			<a class="btn signup" href="{% url 'users:signup' %}">新規登録</a>
+			<p>or sign up with</p>
+			<a class="btn facebook" href="#"><span class="fa fa-facebook"></span>Facebook</a>
+			<a class="btn twitter" href="#"><span class="fa fa-twitter"></span>Twitter</a>
+		</div>
+		<a class="btn videolist mt-5" href="{% url 'app:video_list' %}">動画一覧はこちら</a> -->
